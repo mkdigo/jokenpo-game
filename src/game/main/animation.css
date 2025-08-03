@@ -1,0 +1,67 @@
+#animation {
+  display: flex;
+  border: solid 1px #ccc;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+  height: 300px;
+
+  div {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+
+    img {
+      position: absolute;
+      height: 50%;
+    }
+
+    &:last-child {
+      img {
+        transform: scale(-1, 1);
+      }
+    }
+  }
+}
+
+.rightHandAnimation {
+  --duration: 1.3s;
+
+  img {
+    animation: imgRightAnimate var(--duration) linear;
+  }
+}
+
+.leftHandAnimation {
+  --duration: 1.8s;
+  img {
+    animation: imgLeftAnimate var(--duration) linear;
+  }
+}
+
+@keyframes imgLeftAnimate {
+  25% {
+    transform: rotate(-30deg) translate(-30px, -40px);
+  }
+  50% {
+    transform: rotate(0deg) translate(0px, 0px);
+  }
+  75% {
+    transform: rotate(-30deg) translate(-30px, -40px);
+  }
+}
+
+@keyframes imgRightAnimate {
+  25% {
+    transform: scale(-1, 1) rotate(-30deg) translate(-30px, -40px);
+  }
+  50% {
+    transform: scale(-1, 1) rotate(0deg) translate(0px, 0px);
+  }
+  75% {
+    transform: scale(-1, 1) rotate(-30deg) translate(-30px, -40px);
+  }
+}

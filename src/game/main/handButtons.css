@@ -1,0 +1,23 @@
+section#handButtons {
+  display: flex;
+  gap: 1rem;
+
+  button {
+    width: 80px;
+    height: 80px;
+    background: transparent;
+    border: solid 1px #ccc;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+
+    &:active {
+      background: #ccc;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}
