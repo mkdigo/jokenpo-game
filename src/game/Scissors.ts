@@ -1,14 +1,25 @@
-import type { ElementInterface, TElement } from './ElementInterface';
-import img from '../assets/img/scissors.png';
+import type {
+  TCreateImageProps,
+  TWeaponName,
+  WeaponInterface,
+} from './WeaponInterface';
+import { Weapon } from './Weapon';
+import imgSrc from '../assets/img/scissors.png';
 
-export class Scissors implements ElementInterface {
-  whoIAm: TElement = 'scissors';
-  winsOf: TElement = 'paper';
-  loseTo: TElement = 'rock';
+export class Scissors extends Weapon implements WeaponInterface {
+  whoIAm: TWeaponName = 'scissors';
+  winsOf: TWeaponName = 'paper';
+  loseTo: TWeaponName = 'rock';
 
-  img() {
-    const imgElement = document.createElement('img');
-    imgElement.src = img;
-    return imgElement;
+  constructor() {
+    super();
+  }
+
+  createImage(props?: TCreateImageProps) {
+    return this.createHTMLImageElement({
+      src: imgSrc,
+      className: props?.className,
+      id: props?.id,
+    });
   }
 }

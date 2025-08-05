@@ -1,24 +1,24 @@
-import type { ElementInterface } from './ElementInterface';
+import type { WeaponInterface } from './WeaponInterface';
 
 export class Player {
-  private _hand: ElementInterface;
+  private _weapon: WeaponInterface;
   private _score: number;
 
-  constructor(initialHand: ElementInterface) {
-    this._hand = initialHand;
+  constructor(initialWeapon: WeaponInterface) {
+    this._weapon = initialWeapon;
     this._score = 0;
   }
 
-  get hand() {
-    return this._hand;
+  get weapon() {
+    return this._weapon;
   }
 
   get score() {
     return this._score;
   }
 
-  public setHand(element: ElementInterface) {
-    this._hand = element;
+  public setWeapon(weapon: WeaponInterface) {
+    this._weapon = weapon;
   }
 
   public addScore() {

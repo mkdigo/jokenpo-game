@@ -1,4 +1,4 @@
-import type { ElementInterface } from '../ElementInterface';
+import type { TWeaponName, WeaponInterface } from '../WeaponInterface';
 import { Fight } from '../Fight';
 import { Paper } from '../Paper';
 import { Player } from '../Player';
@@ -14,14 +14,15 @@ export class Game {
   private canFight: boolean;
   private sounds: Sounds;
   private fight: Fight;
-  private rock: ElementInterface;
-  private paper: ElementInterface;
-  private scissors: ElementInterface;
+  private rock: WeaponInterface;
+  private paper: WeaponInterface;
+  private scissors: WeaponInterface;
   private player: Player;
   private computerPlayer: Player;
-  private scoreElement: HTMLDivElement;
-  private leftHandContainer: HTMLDivElement;
-  private rightHandContainer: HTMLDivElement;
+  private playerScoreElement: HTMLSpanElement;
+  private computerScoreElement: HTMLSpanElement;
+  private playerWeaponContainer: HTMLDivElement;
+  private computerWeaponContainer: HTMLDivElement;
 
   constructor(private gameContainer: Element) {
     this.canFight = true;
@@ -32,12 +33,13 @@ export class Game {
 
     this.player = new Player(this.rock);
     this.computerPlayer = new Player(this.rock);
-    this.scoreElement = document.createElement('div');
+    this.playerScoreElement = document.createElement('span');
+    this.computerScoreElement = document.createElement('span');
 
     this.fight = new Fight(this.player, this.computerPlayer);
 
-    this.leftHandContainer = document.createElement('div');
-    this.rightHandContainer = document.createElement('div');
+    this.playerWeaponContainer = document.createElement('div');
+    this.computerWeaponContainer = document.createElement('div');
   }
 
   private createButton(): HTMLButtonElement {
@@ -46,15 +48,50 @@ export class Game {
     return button;
   }
 
+  private hideWeapons() {
+    const weapons = document.querySelectorAll<HTMLImageElement>('.weapon');
+
+    weapons.forEach((weapon) => {
+      weapon.style.display = 'none';
+    });
+  }
+
+  private showWeapons({
+    playerWeaponName,
+    computerWeaponName,
+  }: {
+    playerWeaponName: TWeaponName;
+    computerWeaponName: TWeaponName;
+  }) {
+    this.hideWeapons();
+    const playerWeapon = document.querySelector<HTMLImageElement>(
+      `#player-weapon-${playerWeaponName}`
+    );
+    const computerWeapon = document.querySelector<HTMLImageElement>(
+      `#computer-weapon-${computerWeaponName}`
+    );
+    if (playerWeapon) playerWeapon.style.display = 'block';
+    if (computerWeapon) computerWeapon.style.display = 'block';
+  }
+
   private renderScoreContainer() {
     const section = document.createElement('section');
     section.id = 'score';
 
-    const div = document.createElement('div');
-    div.innerText = 'Score:';
+    const playerScoreContainer = document.createElement('div');
+    const computerScoreContainer = document.createElement('div');
+    const playerText = document.createElement('div');
+    playerText.innerText = 'Player:';
+    const computerText = document.createElement('div');
+    computerText.innerText = 'Computer:';
 
-    section.appendChild(div);
-    section.appendChild(this.scoreElement);
+    playerScoreContainer.appendChild(playerText);
+    playerScoreContainer.appendChild(this.playerScoreElement);
+    computerScoreContainer.appendChild(computerText);
+    computerScoreContainer.appendChild(this.computerScoreElement);
+
+    section.appendChild(playerScoreContainer);
+    section.appendChild(computerScoreContainer);
 
     this.renderScore();
 
@@ -62,20 +99,58 @@ export class Game {
   }
 
   private renderScore() {
-    this.scoreElement.innerText = this.player.score.toString();
+    this.playerScoreElement.innerText = this.player.score.toString();
+    this.computerScoreElement.innerText = this.computerPlayer.score.toString();
   }
 
   private renderAnimationContainer() {
     const section = document.createElement('section');
     section.id = 'animation';
 
-    this.leftHandContainer.appendChild(this.rock.img());
-    this.rightHandContainer.appendChild(this.rock.img());
+    const playerWeaponRock = this.rock.createImage({
+      className: 'weapon',
+      id: `player-weapon-${this.rock.whoIAm}`,
+    });
+    const playerWeaponPaper = this.paper.createImage({
+      className: 'weapon',
+      id: `player-weapon-${this.paper.whoIAm}`,
+    });
+    const playerWeaponScissors = this.scissors.createImage({
+      className: 'weapon',
+      id: `player-weapon-${this.scissors.whoIAm}`,
+    });
 
-    section.appendChild(this.leftHandContainer);
-    section.appendChild(this.rightHandContainer);
+    this.playerWeaponContainer.appendChild(playerWeaponRock);
+    this.playerWeaponContainer.appendChild(playerWeaponPaper);
+    this.playerWeaponContainer.appendChild(playerWeaponScissors);
+
+    const computerWeaponRock = this.rock.createImage({
+      className: 'weapon',
+      id: `computer-weapon-${this.rock.whoIAm}`,
+    });
+    const computerWeaponPaper = this.paper.createImage({
+      className: 'weapon',
+      id: `computer-weapon-${this.paper.whoIAm}`,
+    });
+    const computerWeaponScissors = this.scissors.createImage({
+      className: 'weapon',
+      id: `computer-weapon-${this.scissors.whoIAm}`,
+    });
+
+    this.computerWeaponContainer.appendChild(computerWeaponRock);
+    this.computerWeaponContainer.appendChild(computerWeaponPaper);
+    this.computerWeaponContainer.appendChild(computerWeaponScissors);
+
+    section.appendChild(this.playerWeaponContainer);
+    section.appendChild(this.computerWeaponContainer);
 
     this.gameContainer.appendChild(section);
+
+    this.hideWeapons();
+    this.showWeapons({
+      playerWeaponName: this.rock.whoIAm,
+      computerWeaponName: this.rock.whoIAm,
+    });
   }
 
   private renderHandsButtons() {
@@ -83,11 +158,11 @@ export class Game {
     section.id = 'handButtons';
 
     const rockButton = this.createButton();
-    rockButton.appendChild(this.rock.img());
+    rockButton.appendChild(this.rock.createImage());
     const paperButton = this.createButton();
-    paperButton.appendChild(this.paper.img());
+    paperButton.appendChild(this.paper.createImage());
     const scissorsButton = this.createButton();
-    scissorsButton.appendChild(this.scissors.img());
+    scissorsButton.appendChild(this.scissors.createImage());
 
     section.appendChild(rockButton);
     section.appendChild(paperButton);
@@ -97,34 +172,34 @@ export class Game {
 
     rockButton.addEventListener('click', () => {
       if (!this.canFight) return;
-      this.player.setHand(this.rock);
+      this.player.setWeapon(this.rock);
       this.fightExecute();
     });
 
     paperButton.addEventListener('click', () => {
       if (!this.canFight) return;
-      this.player.setHand(this.paper);
+      this.player.setWeapon(this.paper);
       this.fightExecute();
     });
 
     scissorsButton.addEventListener('click', () => {
       if (!this.canFight) return;
-      this.player.setHand(this.scissors);
+      this.player.setWeapon(this.scissors);
       this.fightExecute();
     });
   }
 
-  private setComputerHand() {
+  private setComputerWeapon() {
     const random = Math.floor(Math.random() * 3) + 1;
     switch (random) {
       case 1:
-        this.computerPlayer.setHand(this.rock);
+        this.computerPlayer.setWeapon(this.rock);
         break;
       case 2:
-        this.computerPlayer.setHand(this.paper);
+        this.computerPlayer.setWeapon(this.paper);
         break;
       case 3:
-        this.computerPlayer.setHand(this.scissors);
+        this.computerPlayer.setWeapon(this.scissors);
         break;
     }
   }
@@ -141,41 +216,39 @@ export class Game {
       timeInSeconds = this.sounds.jankenponAudioDuration;
     }
 
-    this.setComputerHand();
+    this.setComputerWeapon();
 
     const result = this.fight.execute();
 
-    this.leftHandContainer.innerHTML = '';
-    this.rightHandContainer.innerHTML = '';
-    this.leftHandContainer.appendChild(this.rock.img());
-    this.rightHandContainer.appendChild(this.rock.img());
-    this.leftHandContainer.classList.add('leftHandAnimation');
-    this.rightHandContainer.classList.add('rightHandAnimation');
+    this.showWeapons({
+      playerWeaponName: this.rock.whoIAm,
+      computerWeaponName: this.rock.whoIAm,
+    });
 
-    this.leftHandContainer.style.setProperty(
+    this.playerWeaponContainer.classList.add('playerWeaponAnimation');
+    this.computerWeaponContainer.classList.add('computerWeaponAnimation');
+
+    this.playerWeaponContainer.style.setProperty(
       '--duration',
       `${timeInSeconds - 1}s`
     );
-    this.rightHandContainer.style.setProperty(
+    this.computerWeaponContainer.style.setProperty(
       '--duration',
       `${timeInSeconds - 1}s`
     );
 
     setTimeout(() => {
-      this.leftHandContainer.classList.remove('leftHandAnimation');
-      this.rightHandContainer.classList.remove('rightHandAnimation');
-      this.leftHandContainer.innerHTML = '';
-      this.rightHandContainer.innerHTML = '';
-      this.leftHandContainer.appendChild(this.player.hand.img());
-      this.rightHandContainer.appendChild(this.computerPlayer.hand.img());
+      this.playerWeaponContainer.classList.remove('playerWeaponAnimation');
+      this.computerWeaponContainer.classList.remove('computerWeaponAnimation');
+      this.showWeapons({
+        playerWeaponName: this.player.weapon.whoIAm,
+        computerWeaponName: this.computerPlayer.weapon.whoIAm,
+      });
 
-      if (result === 'win') {
-        this.renderScore();
-        this.sounds.play('win');
-      }
+      this.renderScore();
+
       switch (result) {
         case 'win':
-          this.renderScore();
           this.sounds.play('win');
           break;
         case 'lose':

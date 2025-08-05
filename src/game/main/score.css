@@ -1,9 +1,17 @@
 #score {
   display: flex;
-  gap: 0.5rem;
-  font-size: 1.5rem;
-}
+  justify-content: space-between;
+  font-size: 1.25rem;
+  width: 100%;
+  max-width: 500px;
 
-#score div:first-child {
-  font-weight: bold;
+  & > div {
+    display: flex;
+    gap: 0.25rem;
+    font-weight: bold;
+
+    span {
+      font-weight: normal;
+    }
+  }
 }

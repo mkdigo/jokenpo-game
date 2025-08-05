@@ -27,22 +27,22 @@
   }
 }
 
-.rightHandAnimation {
+.computerWeaponAnimation {
   --duration: 1.3s;
 
   img {
-    animation: imgRightAnimate var(--duration) linear;
+    animation: computerWeaponAnimate var(--duration) linear;
   }
 }
 
-.leftHandAnimation {
+.playerWeaponAnimation {
   --duration: 1.8s;
   img {
-    animation: imgLeftAnimate var(--duration) linear;
+    animation: playerWeaponAnimate var(--duration) linear;
   }
 }
 
-@keyframes imgLeftAnimate {
+@keyframes playerWeaponAnimate {
   25% {
     transform: rotate(-30deg) translate(-30px, -40px);
   }
@@ -54,7 +54,7 @@
   }
 }
 
-@keyframes imgRightAnimate {
+@keyframes computerWeaponAnimate {
   25% {
     transform: scale(-1, 1) rotate(-30deg) translate(-30px, -40px);
   }

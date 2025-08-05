@@ -2,10 +2,11 @@
   "name": "jokenpo",
   "private": true,
   "version": "0.0.0",
+  "homepage": "jokenpo",
   "type": "module",
   "scripts": {
     "dev": "vite --host --port=3000",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --base=/jokenpo",
     "preview": "vite preview"
   },
   "devDependencies": {

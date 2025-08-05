@@ -16,13 +16,13 @@ export class Fight {
   }
 
   public execute(): TResult {
-    if (this.player1.hand.winsOf === this.player2.hand.whoIAm) {
+    if (this.player1.weapon.winsOf === this.player2.weapon.whoIAm) {
       this.player1.addScore();
       this.setLastResult('win');
       return 'win';
     }
 
-    if (this.player1.hand.loseTo === this.player2.hand.whoIAm) {
+    if (this.player1.weapon.loseTo === this.player2.weapon.whoIAm) {
       this.player2.addScore();
       this.setLastResult('lose');
       return 'lose';
